@@ -1,35 +1,23 @@
-@import 'color.sass'
-@import 'font.sass'
+@import 'color'
+@import 'font'
 
 :root
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif
-  //font-family: system-ui, Avenir, Helvetica, Arial, sans-serif
   line-height: 1.5
   font-weight: 400
-
-  color-scheme: light dark
-  color: $bg-dark
-  background-color: $fg-dark
-
   font-synthesis: none
   text-rendering: optimizeLegibility
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
 
-a
-  font-weight: 500
-  color: $fg-link
-  text-decoration: inherit
-
-a:hover
-  color: $fg-link-alt
-
+// Base layout styles (theme-independent)
 body
   margin: 0
   display: flex
   place-items: center
   min-width: 320px
   min-height: 100vh
+  transition: all .5s ease-in-out
 
 button
   border-radius: 8px
@@ -38,16 +26,12 @@ button
   font-size: 1em
   font-weight: 500
   font-family: inherit
-  background-color: #1a1a1a
   cursor: pointer
   transition: border-color 0.25s
 
-button:hover
-  border-color: $fg-link
-
-button:focus,
-button:focus-visible
-  outline: 4px auto -webkit-focus-ring-color
+  &:focus,
+  &:focus-visible
+    outline: 4px auto -webkit-focus-ring-color
 
 h1, h2, h3, h4, h5, h6
   margin: 0
@@ -57,11 +41,18 @@ h1, h2, h3, h4, h5, h6
 div
   line-height: 1
 
+a
+  font-weight: 500
+  text-decoration: inherit
+
+// Layout components (theme-independent)
 .card
   padding: 2em
 
 #app
   width: 100vw
+  max-width: 100vw
+  overflow: hidden
   min-height: 100vh
 
 .page-container
@@ -74,17 +65,35 @@ div
 
 .container
   display: flex
-  flex-direction: column
+  position: relative
 
-@media (prefers-color-scheme: light)
-  :root
-    color: #213547
-    background-color: #ffffff
+// Custom Class
+.transition
+  transition: all .4s ease-in-out
 
-  a:hover
-    color: #747bff
+// Theme-specific styles
+.dark-theme
+  color: $theme-dark-text
+  background-color: $theme-dark-background
+
+  a
+    color: $theme-dark-link
+    &:hover
+      color: $theme-dark-link-hover
+
+  button
+    background-color: #1a1a1a
+    &:hover
+      color: $theme-dark-link
+
+.light-theme
+  color: $theme-light-text
+  background-color: $theme-light-background
+
+  a
+    color: $theme-light-link
+    &:hover
+      color: $theme-light-link-hover
 
   button
     background-color: #f9f9f9
-
-

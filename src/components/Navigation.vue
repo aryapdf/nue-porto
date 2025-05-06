@@ -5,7 +5,7 @@
 <template>
     <nav class="nav-container">
         <router-link to="/">Home</router-link>
-        <router-link to="/project">Project</router-link>
+        <router-link to="/projects">Project</router-link>
     </nav>
 </template>
 
