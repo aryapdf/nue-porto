@@ -21,15 +21,17 @@ export default defineComponent({
             route: useRoute(),
             isDevice: useDeviceDetection(),
 
+            name: ['Your Name'],
             titles: [
                 'Lorem\nIpsum Si',
                 'Dolor\nSit Amet',
                 'Consectetur\nAdipiscing',
                 'Elite\nVitae Est'
             ],
-            currentTitleIndex: 0,
+            currentWordIndex: 0,
             intervalId: null,
             displayedText: '',
+            displayedName: '',
             isAnimatingOut: false
         }
     },
@@ -52,33 +54,46 @@ export default defineComponent({
             }
         },
 
-        async titleChange() {
-            // First animation out
-            await this.animateText(this.titles[this.currentTitleIndex], true);
+        async animateName(name) {
+            const chars = name.split('');
+            for (let i = 0; i < chars.length; i++) {
+                this.displayedName = chars.slice(0, i + 1).join('');
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        },
+
+        async sentenceChange(sentences = this.titles, names = this.name) {
+            // First animate out current text and name
+            await Promise.all([
+                this.animateText(sentences[this.currentWordIndex], true),
+            ]);
 
             // Change index
-            this.currentTitleIndex = (this.currentTitleIndex + 1) % this.titles.length;
+            this.currentWordIndex = (this.currentWordIndex + 1) % sentences.length;
 
-            // Then animate in
-            await this.animateText(this.titles[this.currentTitleIndex]);
+            // Then animate in new text and name
+            await Promise.all([
+                this.animateText(sentences[this.currentWordIndex]),
+            ]);
 
             // Schedule next change
             this.intervalId = setTimeout(() => {
-                this.titleChange();
-            }, 2000); // Wait time between animations
-        },
-
-        toggleTheme() {
-            this.isDarkTheme = !this.isDarkTheme;
-            // You can implement the actual theme switching logic here
-            document.body.classList.toggle('dark-theme');
+                this.sentenceChange(sentences, names);
+            }, 2000);
         }
     },
 
     mounted() {
         this.$nextTick(() => {
-            this.displayedText = this.titles[0];
-            this.titleChange();
+            setTimeout(() => {
+                this.animateName(this.name[0]);
+                this.animateText(this.titles[0])
+                    .then(() => {
+                        setTimeout(() => {
+                            this.sentenceChange()
+                        }, 1500)
+                    })
+            }, 1500)
         });
     },
 
@@ -87,6 +102,7 @@ export default defineComponent({
             clearTimeout(this.intervalId);
         }
     }
+
 })
 </script>
 
@@ -99,7 +115,7 @@ export default defineComponent({
         <div class="container navbar-container">
             <nav class="navbar">
                 <div class="nav-brand">
-                    <h1>Your Name</h1>
+                    <div v-html="displayedName.replace(/\n/g, '<br>')" />
                 </div>
                 <div class="nav-links">
                     <router-link to="/" class="nav-link">Home</router-link>
@@ -133,7 +149,6 @@ export default defineComponent({
         left: 0
         .navbar
             display: flex
-            justify-content: space-between
             width: 100vw
             align-items: center
             padding: 1vw 2vw
@@ -144,15 +159,22 @@ export default defineComponent({
             z-index: 1000
 
             .nav-brand
-                h1
+                width: 100%
+                margin: auto
+                div
                     font-size: 1.5rem
                     margin: 0
                     font-family: 'SpaceMono Nerd Font', sans-serif
+                    white-space: pre-line
+                    &::after
+                        content: '_'
+                        animation: blink 1s infinite
 
             .nav-links
                 display: flex
                 gap: 2rem
                 align-items: center
+                margin-right: 2vw
 
                 .nav-link
                     text-decoration: none
@@ -160,7 +182,7 @@ export default defineComponent({
                     font-size: 1.1rem
                     transition: color 0.3s ease
                     &:hover
-                        color: #666
+                        color: #42b983
 
             .theme-toggle
                 position: relative

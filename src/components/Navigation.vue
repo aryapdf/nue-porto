@@ -20,11 +20,14 @@ nav
     position: fixed
     right: 0
     top: 50%
+    z-index: 9999
     a
-        font-weight: bold
-        color: #2c3e50
         text-decoration: none
+        font-size: 1.1rem
+        transition: color 0.3s ease
     a.router-link-exact-active
+        color: inherit
+    a:hover
         color: #42b983
 
 </style>
